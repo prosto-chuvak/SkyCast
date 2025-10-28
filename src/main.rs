@@ -1,6 +1,5 @@
-use serde::{Deserialize, Serialize}; // Для десериализации JSON в структуры
+use serde::{Deserialize, Serialize};
 
-// Определяем структуры, соответствующие JSON
 #[derive(Serialize, Deserialize, Debug)]
 struct WeatherResponse {
     latitude: f64,
@@ -10,93 +9,84 @@ struct WeatherResponse {
     timezone: String,
     timezone_abbreviation: String,
     elevation: f64,
-    current_weather_units: CurrentWeatherUnits,
+    #[serde(rename = "current_units", default)]
+    current_weather_units: Option<CurrentWeatherUnits>,
+    #[serde(rename = "current")]
     current_weather: CurrentWeather,
 }
-
 #[derive(Serialize, Deserialize, Debug)]
 struct CurrentWeatherUnits {
     time: String,
     interval: String,
-    temperature: String,
-    windspeed: String,
-    winddirection: String,
-    is_day: String,
-    weathercode: String,
+    temperature_2m: String,
+    relative_humidity_2m: String,
+    wind_speed_10m: String,
+    weather_code: String,
+    precipitation: String,
+    wind_direction_10m: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 struct CurrentWeather {
     time: String,
     interval: i32,
-    temperature: f64,
-    windspeed: f64,
-    winddirection: f64,
-    is_day: i32,
-    weathercode: i32,
+    temperature_2m: f64,
+    relative_humidity_2m: i32,
+    wind_speed_10m: f64,
+    weather_code: i32,
+    precipitation: f64,
+    wind_direction_10m: i32,
 }
 
 fn print_data(weather_data: WeatherResponse) {
-    println!("\n--- Данные о погоде ---");
-    println!("Широта: {}", weather_data.latitude);
-    println!("Долгота: {}", weather_data.longitude);
-    println!("Время генерации (мс): {}", weather_data.generationtime_ms);
-    println!("Смещение UTC (сек): {}", weather_data.utc_offset_seconds);
-    println!("Часовой пояс: {}", weather_data.timezone);
-    println!("Аббревиатура часового пояса: {}", weather_data.timezone_abbreviation);
-    println!("Высота над уровнем моря (м): {}", weather_data.elevation);
+    let weather = match weather_data.current_weather.weather_code {
+        0 => "Clear".to_string(),
+        1 => "Partly cloudy".to_string(),
+        2 => "Cloudy".to_string(),
+        3 => "Overcast".to_string(),
+        45 | 48 => "Fog".to_string(),
+        51 | 53 | 55 => "Drizzle".to_string(),
+        61 | 63 | 65 => "Rain".to_string(),
+        71 | 73 | 75 => "Snow".to_string(),
+        80 | 81 | 82 => "Downpour".to_string(),
+        95 | 96 | 99 => "Thunderstorm".to_string(),
+        _ => "Unknown weather".to_string(),
+    };
 
-    println!("\n--- Единицы измерения ---");
-    println!("Время: {}", weather_data.current_weather_units.time);
-    println!("Интервал: {}", weather_data.current_weather_units.interval);
-    println!("Температура: {}", weather_data.current_weather_units.temperature);
-    println!("Скорость ветра: {}", weather_data.current_weather_units.windspeed);
-    println!("Направление ветра: {}", weather_data.current_weather_units.winddirection);
-    println!("Код погоды: {}", weather_data.current_weather_units.weathercode);
-
-    println!("\n--- Текущая погода ---");
-    println!("Время: {}", weather_data.current_weather.time);
-    println!("Интервал (с): {}", weather_data.current_weather.interval);
-    println!("Температура: {}°C", weather_data.current_weather.temperature);
-    println!("Скорость ветра: {} км/ч", weather_data.current_weather.windspeed);
-    println!("Направление ветра: {}°", weather_data.current_weather.winddirection);
-    // is_day: 0 - ночь, 1 - день
-    println!("День (1) или Ночь (0): {}", weather_data.current_weather.is_day);
-    println!("Код погоды (WMO): {}", weather_data.current_weather.weathercode);
-
-    if weather_data.current_weather.is_day != 0 {
-        println!("Сейчас день.");
-    } else {
-        println!("Сейчас ночь.");
-    }
-
-    match weather_data.current_weather.weathercode {
-        0 => println!("Ясно."),
-        1 => println!("Малооблачно"),
-        2 => println!("Облачно"),
-        3 => println!("Пасмурно"),
-        45 | 48 => println!("Туман."),
-        51 | 53 | 55 => println!("Морось."),
-        61 | 63 | 65 => println!("Дождь."),
-        71 | 73 | 75 => println!("Снег."),
-        80 | 81 | 82 => println!("Ливень."),
-        95 | 96 | 99 => println!("Гроза."),
-        _ => println!("Неизвестный код погоды WMO: {}", weather_data.current_weather.weathercode),
-    }
+    println!("Weather: {}", &weather);
+    println!(
+        "Temperature: {}'C",
+        weather_data.current_weather.temperature_2m
+    );
+    println!(
+        "Humidity: {}",
+        weather_data.current_weather.relative_humidity_2m
+    );
+    println!(
+        "Precipitation: {}",
+        weather_data.current_weather.precipitation
+    );
+    println!(
+        "Wind speed: {} km/h",
+        weather_data.current_weather.wind_speed_10m
+    );
+    println!(
+        "Wind direction: {}",
+        weather_data.current_weather.wind_direction_10m
+    );
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let lat = 56.13222;
     let lon = 47.25194;
-    let url = format!("https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current_weather=true&timezone=GMT", lat, lon);
-
-    println!("Отправляем GET-запрос на {}", url);
-
-    let response = ureq::get(&url)
-        .call()?;
-
+    let url = format!(
+        "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,precipitation,wind_direction_10m&forecast_days=1",
+        lat, lon
+    );
+    let response = ureq::get(&url).call()?;
     let status = response.status();
-    println!("Статус ответа: {}", status);
+
+    // println!("Статус ответа: {}", status);
 
     if status == 200 {
         let mut response_body = response.into_body();
@@ -104,11 +94,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         print_data(serde_json::from_str(&response_text)?);
     } else {
-        eprintln!("Запрос завершился с ошибкой: {}", status);
-        // Попробуем прочитать тело ошибки для отладки
+        eprintln!("The request ended with an error: {}", status);
         let mut response_body = response.into_body();
         let error_text = response_body.read_to_string()?;
-        eprintln!("Тело ошибки: {}", error_text);
+        eprintln!("Error body: {}", error_text);
     }
 
     Ok(())
