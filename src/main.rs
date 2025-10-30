@@ -1,14 +1,7 @@
 use reqwest;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
-
-#[derive(Deserialize, Debug)]
-struct Place {
-    #[serde(rename = "lat")]
-    latitude: String,
-    #[serde(rename = "lon")]
-    longitude: String,
-}
+mod utils;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct WeatherResponse {
@@ -87,33 +80,9 @@ fn print_data(weather_data: WeatherResponse) {
     );
 }
 
-async fn gets(city: &str) -> Result<(f64, f64), Box<dyn std::error::Error>> {
-    let client = reqwest::Client::new();
-    let url = format!(
-        "https://nominatim.openstreetmap.org/search?city={}&format=json&limit=1",
-        city
-    );
-
-    let places: Vec<Place> = client
-        .get(&url)
-        .header("User-Agent", "my-rust-app")
-        .send()
-        .await?
-        .json()
-        .await?;
-
-    if let Some(first) = places.first() {
-        let lat: f64 = first.latitude.parse()?;
-        let lon: f64 = first.longitude.parse()?;
-        Ok((lat, lon))
-    } else {
-        Err("Esad".into())
-    }
-}
-
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let (lat, lon) = gets("Cairo").await?;
+    let (lat, lon) = utils::get_coordinates("Cairo").await?;
     let url = format!(
         "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,precipitation,wind_direction_10m&forecast_days=1",
         lat, lon
