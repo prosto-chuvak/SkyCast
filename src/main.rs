@@ -1,4 +1,14 @@
+use reqwest;
 use serde::{Deserialize, Serialize};
+use std::error::Error;
+
+#[derive(Deserialize, Debug)]
+struct Place {
+    #[serde(rename = "lat")]
+    latitude: String,
+    #[serde(rename = "lon")]
+    longitude: String,
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 struct WeatherResponse {
@@ -14,6 +24,7 @@ struct WeatherResponse {
     #[serde(rename = "current")]
     current_weather: CurrentWeather,
 }
+
 #[derive(Serialize, Deserialize, Debug)]
 struct CurrentWeatherUnits {
     time: String,
@@ -59,11 +70,11 @@ fn print_data(weather_data: WeatherResponse) {
         weather_data.current_weather.temperature_2m
     );
     println!(
-        "Humidity: {}",
+        "Humidity: {}%",
         weather_data.current_weather.relative_humidity_2m
     );
     println!(
-        "Precipitation: {}",
+        "Precipitation: {} mm",
         weather_data.current_weather.precipitation
     );
     println!(
@@ -71,33 +82,55 @@ fn print_data(weather_data: WeatherResponse) {
         weather_data.current_weather.wind_speed_10m
     );
     println!(
-        "Wind direction: {}",
+        "Wind direction: {}°",
         weather_data.current_weather.wind_direction_10m
     );
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let lat = 56.13222;
-    let lon = 47.25194;
+async fn gets(city: &str) -> Result<(f64, f64), Box<dyn std::error::Error>> {
+    let client = reqwest::Client::new();
+    let url = format!(
+        "https://nominatim.openstreetmap.org/search?city={}&format=json&limit=1",
+        city
+    );
+
+    let places: Vec<Place> = client
+        .get(&url)
+        .header("User-Agent", "my-rust-app")
+        .send()
+        .await?
+        .json()
+        .await?;
+
+    if let Some(first) = places.first() {
+        let lat: f64 = first.latitude.parse()?;
+        let lon: f64 = first.longitude.parse()?;
+        Ok((lat, lon))
+    } else {
+        Err("Esad".into())
+    }
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error>> {
+    let (lat, lon) = gets("Cairo").await?;
     let url = format!(
         "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,precipitation,wind_direction_10m&forecast_days=1",
         lat, lon
     );
-    let response = ureq::get(&url).call()?;
-    let status = response.status();
 
-    // println!("Статус ответа: {}", status);
+    let response = reqwest::get(&url).await?;
 
-    if status == 200 {
-        let mut response_body = response.into_body();
-        let response_text = response_body.read_to_string()?;
-
-        print_data(serde_json::from_str(&response_text)?);
-    } else {
-        eprintln!("The request ended with an error: {}", status);
-        let mut response_body = response.into_body();
-        let error_text = response_body.read_to_string()?;
-        eprintln!("Error body: {}", error_text);
+    match response.status() {
+        reqwest::StatusCode::OK => {
+            let weather_data: WeatherResponse = response.json().await?;
+            print_data(weather_data);
+        }
+        status => {
+            eprintln!("The request ended with an error: {}", status);
+            let error_text = response.text().await?;
+            eprintln!("Error body: {}", error_text);
+        }
     }
 
     Ok(())
