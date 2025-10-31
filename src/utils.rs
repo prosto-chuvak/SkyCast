@@ -29,6 +29,6 @@ pub async fn get_coordinates(city: &str) -> Result<(f64, f64), Box<dyn std::erro
         let lon: f64 = first.longitude.parse()?;
         Ok((lat, lon))
     } else {
-        Err("Esad".into())
+        Err("City not found!".into())
     }
 }
