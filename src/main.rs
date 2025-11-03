@@ -2,6 +2,7 @@ use clap::Parser;
 use reqwest;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
+mod icons;
 mod utils;
 
 #[derive(Serialize, Deserialize, Debug)]

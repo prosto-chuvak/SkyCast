@@ -1,101 +1,106 @@
-let condition_unknown = [
-    "             ",
-	 "    .-.      ",
-	 "     __)     ",
-	 "    (        ",
-	 "     `-’     ",
-	 "      •      ",
-	 "             ",
+static mut condition_unknown = vec![
+    String::from("             "),
+	 String::from("    .-.      "),
+	 String::from("     __)     "),
+	 String::from("    (        "),
+	 String::from("     `-’     "),
+	 String::from("      •      "),
+	 String::from("             ")
 ];
 
-let condition_clear = [
-    "             ",
-	 "    \\   /    ",
-	 "     .-.     ",
-	 "  ― (   ) ―  ",
-	 "     `-’     ",
-	 "    /   \\    ",
-	 "             ",
+static mut condition_clear = vec![
+    String::from("             "),
+	 String::from("    \\   /    "),
+	 String::from("     .-.     "),
+	 String::from("  ― (   ) ―  "),
+	 String::from("     `-’     "),
+	 String::from("    /   \\    "),
+	 String::from("             ")
 ];
-let condition_partly_cloudy = [
-    "             ",
-	 "   \\  /      ",
-	 " _ /\"\".-.    ",
-	 "   \\_(   ).  ",
-	 "   /(___(__) ",
-	 "             ",
-	 "             ",
+static mut condition_partly_cloudy = vec![
+    String::from("             "),
+	 String::from("   \\  /      "),
+	 String::from(" _ /\"\".-.    "),
+	 String::from("   \\_(   ).  "),
+	 String::from("   /(___(__) "),
+	 String::from("             "),
+	 String::from("             ")
 ];
-let condition_cloudy = [
-    "             ",
-	 "             ",
-	 "     .--.    ",
-	 "  .-(    ).  ",
-	 " (___.__)__) ",
-	 "             ",
-	 "             ",
+static mut condition_cloudy = vec![
+    String::from("             "),
+	 String::from("             "),
+	 String::from("     .--.    "),
+	 String::from("  .-(    ).  "),
+	 String::from(" (___.__)__) "),
+	 String::from("             "),
+	 String::from("             ")
 ];
-let condition_overcast  = [
-    "         .-. ",
-    "        (   )",
-    "     .--.`-' ",
-    "  .-(    ).  ",
-    " (___.__)__) ",
-    "             ",
-    "             ",
-let condition_fog = [
-    "             ",
-	 "             ",
-	 " _ - _ - _ - ",
-	 "  _ - _ - _  ",
-	 " _ - _ - _ - ",
-	 "             ",
-	 "             ", 
+static mut condition_overcast  = vec![
+    String::from("         .-. "),
+    String::from("        (   )"),
+    String::from("     .--.`-' "),
+    String::from("  .-(    ).  "),
+    String::from(" (___.__)__) "),
+    String::from("             "),
+    String::from("             ")
 ];
-let condition_drizzle = [
-    "             ",
-    "     .--.     ",
-    "  .-(    ).   ",
-    " (___.__)__)  ",
-    "   , '   '    ",
-    "  ' , '       ",
-    "             ",
+static mut condition_fog = vec![
+    String::from("             "),
+	 String::from("             "),
+	 String::from(" _ - _ - _ - "),
+	 String::from("  _ - _ - _  "),
+	 String::from(" _ - _ - _ - "),
+	 String::from("             "),
+	 String::from("             ")
 ];
-let condition_rain = [
-    "             ",
-    "     .--.     ",
-    "  .-(    ).   ",
-    " (___.__)__)  ",
-    "   ' ' ' '    ",
-    "  ' ' ' '     ",
-    "             ",
+static mut condition_drizzle = vec![
+    String::from("             "),
+    String::from("     .--.     "),
+    String::from("  .-(    ).   "),
+    String::from(" (___.__)__)  "),
+    String::from("   , '   '    "),
+    String::from("  ' , '       "),
+    String::from("             ")
 ];
-let condition_snow = [
-    "             ",
-	 "     .-.     ",
-	 "    (   ).   ",
-	 "   (___(__)  ",
-	 "    *  *  *  ",
-	 "   *  *  *   ",
-	 "             ",
+static mut condition_rain = vec![
+    String::from("             "),
+    String::from("     .--.     "),
+    String::from("  .-(    ).   "),
+    String::from(" (___.__)__)  "),
+    String::from("   ' ' ' '    "),
+    String::from("  ' ' ' '     "),
+    String::from("             ")
 ];
-let condition_downpour = [
-    "             ",
-    "     .--.     ",
-    "  .-(    ).   ",
-    " (___.__)__)  ",
-    "  ,',',','    ",
-    " ,',',','     ",
-    "             ",
+static mut condition_snow = vec![
+    String::from("             "),
+	 String::from("     .-.     "),
+	 String::from("    (   ).   "),
+	 String::from("   (___(__)  "),
+	 String::from("    *  *  *  "),
+	 String::from("   *  *  *   "),
+	 String::from("             ")
+];
+static mut condition_downpour = vec![
+    String::from("             "),
+    String::from("     .--.     "),
+    String::from("  .-(    ).   "),
+    String::from(" (___.__)__)  "),
+    String::from("  ,',',','    "),
+    String::from9(" ,',',','     "),
+    String::from("             ")
  
 ];
 
-let condition_thunderstorm = [
-    "             ",
-	 "     .-.     ",
-	 "    (   ).   ",
-	 "   (___(__)  ",
-	 "    ⚡\"\"⚡\"\" ",
-	 "  ‚'‚'‚'‚'   ",
-	 "             ",
+static mut condition_thunderstorm = vec![
+    String::from("             "),
+	 String::from("     .-.     "),
+	 String::from("    (   ).   "),
+	 String::from("   (___(__)  "),
+	 String::from("    Z\"\"Z\"\" "),
+	 String::from("  ‚'‚'‚'‚'   "),
+	 String::from("             ")
 ];
+
+pub fn kill() {
+
+};
