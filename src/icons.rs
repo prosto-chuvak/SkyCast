@@ -102,5 +102,5 @@ static mut condition_thunderstorm = vec![
 ];
 
 pub fn kill() {
-
+    
 };
