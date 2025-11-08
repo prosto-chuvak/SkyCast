@@ -15,7 +15,7 @@ Pre-built binaries for Linux, macOS, and Windows are available in the [Releases]
 ### Building from source code
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/skycast
+git clone https://github.com/prosto-chuvak/SkyCast
 cd skycast
 ```
 
@@ -54,8 +54,6 @@ skycast --city "New York"
 skycast -V
 ```
 
-> **Note**: The city name is case-insensitive and supports spaces when quoted.
-
 ## Requirements
 
 - Rust (installed via [rustup](https://rustup.rs/))
@@ -69,9 +67,3 @@ This project uses the following crates:
 - `serde` — for JSON deserialization
 - `tokio` — async runtime
 - `reqwest` — HTTP client
-
-## License
-
-Distributed under the **GNU General Public License v3.0**.  
-See [LICENSE](LICENSE) for more information.
-```
