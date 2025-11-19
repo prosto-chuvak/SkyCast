@@ -9,8 +9,7 @@ struct Place {
     longitude: String,
 }
 
-pub async fn get_coordinates(city: &str) -> Result<(f64, f64), Box<dyn std::error::Error>> {
-    let client = reqwest::Client::new();
+pub async fn get_coordinates(client: &reqwest::Client, city: &str) -> Result<(f64, f64), Box<dyn std::error::Error>> {
     let url = format!(
         "https://nominatim.openstreetmap.org/search?city={}&format=json&limit=1",
         city
@@ -25,8 +24,10 @@ pub async fn get_coordinates(city: &str) -> Result<(f64, f64), Box<dyn std::erro
         .await?;
 
     if let Some(first) = places.first() {
-        let lat: f64 = first.latitude.parse()?;
-        let lon: f64 = first.longitude.parse()?;
+        let lat: f64 = first.latitude.parse()
+            .map_err(|_| format!("Failed to parse latitude: {}", first.latitude))?;
+        let lon: f64 = first.longitude.parse()
+            .map_err(|_| format!("Failed to parse longitude: {}", first.longitude))?;
         Ok((lat, lon))
     } else {
         Err("City not found!".into())

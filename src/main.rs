@@ -17,14 +17,15 @@ struct Args {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    let client = reqwest::Client::new();
     let args = Args::parse();
-    let (lat, lon) = utils::get_coordinates(&args.city).await?;
+    let (lat, lon) = utils::get_coordinates(&client, &args.city).await?;
     let url = format!(
         "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,precipitation,wind_direction_10m&forecast_days=1",
         lat, lon
     );
 
-    let response = reqwest::get(&url).await?;
+    let response = client.get(&url).send().await?;
 
     match response.status() {
         reqwest::StatusCode::OK => {
