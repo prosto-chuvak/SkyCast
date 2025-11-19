@@ -4,7 +4,7 @@ A Rust CLI utility that displays the current weather in the style of **neofetch*
 
 ## Description
 
-SkyCast is a minimal, cross-platform command-line tool written in Rust that fetches and beautifully displays current weather information for a given city — inspired by the aesthetic of `neofetch`.  
+SkyCast is a minimal, cross-platform command-line tool written in Rust that fetches and beautifully displays current weather information for a given city — inspired by the aesthetic of **neofetch**.  
 This project serves both as a practical utility and a learning exercise in async Rust, HTTP clients, and CLI design.
 
 ## Installation and Run
@@ -56,7 +56,7 @@ skycast -V
 
 ## Requirements
 
-- Rust (installed via [rustup](https://rustup.rs/))
+- `Rust` (installed via [rustup](https://rustup.rs/))
 - `cargo` (included with Rust)
 - Internet connection (to fetch weather data)
 
