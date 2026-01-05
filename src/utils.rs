@@ -32,3 +32,9 @@ pub async fn get_coordinates(city: &str) -> Result<(f64, f64), Box<dyn std::erro
         Err("City not found!".into())
     }
 }
+
+pub fn kmh_to_ms (kmh: f64) -> String {
+  let temp_ms = (kmh * 5.0) / 18.0;
+  let ms = format!("{:.1}", temp_ms);
+  return ms;
+}

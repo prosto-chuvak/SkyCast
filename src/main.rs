@@ -1,4 +1,4 @@
-// mod icons;
+mod icon;
 mod print;
 mod utils;
 mod weather;
