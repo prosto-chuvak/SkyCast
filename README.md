@@ -16,7 +16,7 @@ Pre-built binaries for Linux, macOS, and Windows are available in the [Releases]
 1. Clone the repository:
 ```bash
 git clone https://github.com/prosto-chuvak/SkyCast
-cd skycast
+cd SkyCast
 ```
 
 2. Build the project in release mode:
