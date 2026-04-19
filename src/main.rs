@@ -1,10 +1,9 @@
-// mod icons;
 mod print;
 mod utils;
 mod weather;
 
 use clap::Parser;
-use reqwest;
+use isahc::AsyncReadResponseExt;
 use std::error::Error;
 use weather::WeatherResponse;
 
@@ -24,9 +23,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
         lat, lon
     );
 
-    let response = reqwest::get(&url).await?;
+    let mut response = isahc::get_async(&url).await?;
 
-    match response.status() {
+    /*match response.status() {
         reqwest::StatusCode::OK => {
             let mut weather_data: WeatherResponse = response.json().await?;
             print::print_data(&mut weather_data);
@@ -36,6 +35,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
             let error_text = response.text().await?;
             eprintln!("Error body: {}", error_text);
         }
+    }*/
+
+    match response.status().as_u16() {
+        200 => {
+            let mut weather_data: WeatherResponse = response.json().await?;
+            print::print_data(&mut weather_data);
+        }
+        _ => println!("error"),
     }
 
     Ok(())
