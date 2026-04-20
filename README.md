@@ -66,4 +66,4 @@ This project uses the following crates:
 - `clap` — for CLI argument parsing
 - `serde` — for JSON deserialization
 - `tokio` — async runtime
-- `reqwest` — HTTP client
+- `isahc ` — HTTP client
