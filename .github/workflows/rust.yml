@@ -3,8 +3,16 @@ name: SkyCast
 on:
   push:
     branches: [ "master", "dev" ]
+    paths-ignore:           
+      - 'README.md'
+      - '.github/**'
+      - '**.md'          
   pull_request:
     branches: [ "master", "dev" ]
+    paths-ignore:          
+      - 'README.md'
+      - '.github/**'
+      - '**.md'
 
 env:
   CARGO_TERM_COLOR: always
